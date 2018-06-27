@@ -18,11 +18,12 @@ import android.widget.Toast;
 public class PetService extends Service {
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mLayoutParams;
-    private boolean flag = true;//标记悬浮窗是否已经显示
+    private WindowManager.LayoutParams mSmallLayoutParams;
     private LinearLayout mPetView;//悬浮窗布局
+    private LinearLayout mSmallPetView;//贴边后显示的悬浮窗布局
     private ImageView mPetView_image;
-    //悬浮窗是否是打开状态
-    private boolean open = false ;
+    private int screenWidth, screenHeight;
+    private boolean isShowPetView, isShowSmallPetView;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -31,31 +32,40 @@ public class PetService extends Service {
 
     @Override
     public void onCreate() {
+        isShowPetView = false;
+        isShowSmallPetView = false;
         //获取mWindowManager对象
         mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        //取得窗口的宽度和高度
         DisplayMetrics dm = new DisplayMetrics();
-        //取得窗口属性
         mWindowManager.getDefaultDisplay().getMetrics(dm);
-        //窗口的宽度
-        int screenWidth = dm.widthPixels;
-        //窗口高度
-        int screenHeight = dm.heightPixels;
-        //获取LayoutParams对象
+        screenWidth = dm.widthPixels;
+        screenHeight = dm.heightPixels;
+        //设置mLayoutParams对象
         mLayoutParams = new WindowManager.LayoutParams();
-        mLayoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
+        mLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         mLayoutParams.format = PixelFormat.TRANSLUCENT;// 支持透明
-        //mLayoutParams.format = PixelFormat.RGBA_8888;
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         mLayoutParams.width = 550;//窗口的宽
         mLayoutParams.height = 400;//窗口的高
         mLayoutParams.gravity = Gravity.START | Gravity.TOP;
         mLayoutParams.x = (screenWidth - 550) / 2;
         mLayoutParams.y = 1000;
-        //mLayoutParams.alpha = 0.1f;//窗口的透明度
+        //设置mSmallLayoutParams对象
+        mSmallLayoutParams = new WindowManager.LayoutParams();
+        mSmallLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        mSmallLayoutParams.format = PixelFormat.TRANSLUCENT;// 支持透明
+        mSmallLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        mSmallLayoutParams.width = 100;//窗口的宽
+        mSmallLayoutParams.height = 400;//窗口的高
+        mSmallLayoutParams.gravity = Gravity.START | Gravity.TOP;
+        mSmallLayoutParams.x = 0;
+        mSmallLayoutParams.y = 0;
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         //获取pet_layout.xml布局文件
         mPetView = (LinearLayout) inflater.inflate(R.layout.pet_layout, null);
-//        mWindowManager.addView(mPetView, mLayoutParams);
+        //获取small_pet_layout.xml布局文件
+        mSmallPetView = (LinearLayout) inflater.inflate(R.layout.small_pet_layout, null);
 
         mPetView.setOnTouchListener(new View.OnTouchListener() {
             private float startX;//拖动开始之前悬浮窗的x位置
@@ -64,8 +74,6 @@ public class PetService extends Service {
             private float lastY;//上个MotionEvent的y位置
             private float nowX;//这次MotionEvent的x位置
             private float nowY;//这次MotionEvent的y位置
-            private float translateX;//每次拖动产生MotionEvent事件之后窗口所要移动的x轴距离
-            private float translateY;//每次拖动产生MotionEvent事件的时候窗口所要移动的x轴距离
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 final int action = event.getAction();
@@ -77,14 +85,87 @@ public class PetService extends Service {
                 } else if (action == MotionEvent.ACTION_MOVE) {
                     nowX = event.getRawX();
                     nowY = event.getRawY();
-                    translateX = (int) (nowX - lastX);
-                    translateY = (int) (nowY - lastY);
-                    mLayoutParams.x += translateX;
-                    mLayoutParams.y += translateY;
-                    //更新布局
+                    mLayoutParams.x += (int) (nowX - lastX);
+                    mLayoutParams.y += (int) (nowY - lastY);
+                    if (mLayoutParams.x < 0) {
+                        mLayoutParams.x = 0;
+                    } else if (mLayoutParams.x > PetService.this.screenWidth - mLayoutParams.width) {
+                        mLayoutParams.x = PetService.this.screenWidth - mLayoutParams.width;
+                    }
+                    if (mLayoutParams.y < 0) {
+                        mLayoutParams.y = 0;
+                    } else if (mLayoutParams.y > PetService.this.screenHeight - mLayoutParams.height) {
+                        mLayoutParams.y = PetService.this.screenHeight - mLayoutParams.height;
+                    }
                     mWindowManager.updateViewLayout(mPetView, mLayoutParams);
                     lastX = nowX;
                     lastY = nowY;
+                } else if (action == MotionEvent.ACTION_UP) {
+                    nowX = event.getRawX();
+                    nowY = event.getRawY();
+                    if (mLayoutParams.x <= 0 + 5) {
+                        // 左贴边
+                        mSmallLayoutParams.x = 0;
+                        mSmallLayoutParams.y = mLayoutParams.y;
+                        isShowPetView = false;
+                        isShowSmallPetView = true;
+                        mWindowManager.removeView(mPetView);
+                        mWindowManager.addView(mSmallPetView, mSmallLayoutParams);
+                    } else if (mLayoutParams.x >= PetService.this.screenWidth - mLayoutParams.width - 5) {
+                        // 右贴边
+                        mSmallLayoutParams.x = PetService.this.screenWidth - mSmallLayoutParams.width;
+                        mSmallLayoutParams.y = mLayoutParams.y;
+                        isShowPetView = false;
+                        isShowSmallPetView = true;
+                        mWindowManager.removeView(mPetView);
+                        mWindowManager.addView(mSmallPetView, mSmallLayoutParams);
+                    }
+//                    Toast.makeText(getApplicationContext(),
+//                            nowX + " + " + nowY + "\n" + mLayoutParams.x + " + " + mLayoutParams.y, Toast.LENGTH_SHORT).show();
+//                    mWindowManager.updateViewLayout(mPetView, mLayoutParams);
+                }
+                return false;
+            }
+        });
+
+        mSmallPetView.setOnTouchListener(new View.OnTouchListener() {
+            private float lastX;//上个MotionEvent的x位置
+            private float lastY;//上个MotionEvent的y位置
+            private float nowX;//这次MotionEvent的x位置
+            private float nowY;//这次MotionEvent的y位置
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    lastX = event.getRawX();
+                    lastY = event.getRawY();
+                } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    nowX = event.getRawX();
+                    nowY = event.getRawY();
+                    mSmallLayoutParams.x += (int) (nowX - lastX);
+                    mSmallLayoutParams.y += (int) (nowY - lastY);
+                    if (mSmallLayoutParams.x < 0) {
+                        mSmallLayoutParams.x = 0;
+                    } else if (mSmallLayoutParams.x > PetService.this.screenWidth - mSmallLayoutParams.width) {
+                        mSmallLayoutParams.x = PetService.this.screenWidth - mSmallLayoutParams.width;
+                    }
+                    if (mSmallLayoutParams.y < 0) {
+                        mSmallLayoutParams.y = 0;
+                    } else if (mSmallLayoutParams.y > PetService.this.screenHeight - mSmallLayoutParams.height) {
+                        mSmallLayoutParams.y = PetService.this.screenHeight - mSmallLayoutParams.height;
+                    }
+                    mWindowManager.updateViewLayout(mSmallPetView, mSmallLayoutParams);
+                    lastX = nowX;
+                    lastY = nowY;
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (mSmallLayoutParams.x > 0 || mSmallLayoutParams.x < PetService.this.screenWidth - mSmallLayoutParams.width) {
+                        mLayoutParams.x = mSmallLayoutParams.x;
+                        mLayoutParams.y = mSmallLayoutParams.y;
+                        isShowPetView = true;
+                        isShowSmallPetView = false;
+                        mWindowManager.removeView(mSmallPetView);
+                        mWindowManager.addView(mPetView, mLayoutParams);
+                    }
                 }
                 return false;
             }
@@ -95,13 +176,16 @@ public class PetService extends Service {
 
     @Override
     public void onDestroy() {
-        mWindowManager.removeView(mPetView);
+        if (isShowPetView)
+            mWindowManager.removeView(mPetView);
+        if (isShowSmallPetView)
+            mWindowManager.removeView(mSmallPetView);
         super.onDestroy();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // TODO Auto-generated method stub
+        isShowPetView = true;
         mWindowManager.addView(mPetView, mLayoutParams);
         return super.onStartCommand(intent, flags, startId);
     }
