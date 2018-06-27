@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 public class PetService extends Service {
     private WindowManager mWindowManager;
@@ -43,21 +43,29 @@ public class PetService extends Service {
         screenHeight = dm.heightPixels;
         //设置mLayoutParams对象
         mLayoutParams = new WindowManager.LayoutParams();
-        mLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        if (Build.VERSION.SDK_INT >= 26) {
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        }
         mLayoutParams.format = PixelFormat.TRANSLUCENT;// 支持透明
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
-        mLayoutParams.width = 550;//窗口的宽
-        mLayoutParams.height = 400;//窗口的高
+        mLayoutParams.width = 200;//窗口的宽
+        mLayoutParams.height = 200;//窗口的高
         mLayoutParams.gravity = Gravity.START | Gravity.TOP;
-        mLayoutParams.x = (screenWidth - 550) / 2;
-        mLayoutParams.y = 1000;
+        mLayoutParams.x = 0;
+        mLayoutParams.y = 0;
         //设置mSmallLayoutParams对象
         mSmallLayoutParams = new WindowManager.LayoutParams();
-        mSmallLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        if (Build.VERSION.SDK_INT >= 26) {
+            mSmallLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            mSmallLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        }
         mSmallLayoutParams.format = PixelFormat.TRANSLUCENT;// 支持透明
         mSmallLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         mSmallLayoutParams.width = 100;//窗口的宽
-        mSmallLayoutParams.height = 400;//窗口的高
+        mSmallLayoutParams.height = 200;//窗口的高
         mSmallLayoutParams.gravity = Gravity.START | Gravity.TOP;
         mSmallLayoutParams.x = 0;
         mSmallLayoutParams.y = 0;
@@ -120,9 +128,6 @@ public class PetService extends Service {
                         mWindowManager.removeView(mPetView);
                         mWindowManager.addView(mSmallPetView, mSmallLayoutParams);
                     }
-//                    Toast.makeText(getApplicationContext(),
-//                            nowX + " + " + nowY + "\n" + mLayoutParams.x + " + " + mLayoutParams.y, Toast.LENGTH_SHORT).show();
-//                    mWindowManager.updateViewLayout(mPetView, mLayoutParams);
                 }
                 return false;
             }
