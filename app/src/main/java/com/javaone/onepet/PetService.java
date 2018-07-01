@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
@@ -14,6 +15,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import java.util.Random;
+import java.util.Date;
 
 public class PetService extends Service {
     private WindowManager mWindowManager;
@@ -25,6 +28,8 @@ public class PetService extends Service {
     private int screenWidth, screenHeight;
     private boolean isShowPetView, isShowSmallPetView;
 
+    private int petType;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -32,6 +37,11 @@ public class PetService extends Service {
 
     @Override
     public void onCreate() {
+        super.onCreate();
+
+        // pet type
+        petType = 1;
+
         isShowPetView = false;
         isShowSmallPetView = false;
         //获取mWindowManager对象
@@ -84,6 +94,7 @@ public class PetService extends Service {
             private float nowY;//这次MotionEvent的y位置
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
                 final int action = event.getAction();
                 if (action == MotionEvent.ACTION_DOWN) {
                     lastX = event.getRawX();
@@ -176,7 +187,110 @@ public class PetService extends Service {
             }
         });
 
-        super.onCreate();
+        mPetView.setBackgroundResource(R.drawable.pika_walk);
+        mSmallPetView.setBackgroundResource(R.drawable.pika_walk1);
+        final AnimationDrawable moveAnim = (AnimationDrawable) mPetView.getBackground();
+        moveAnim.start();
+
+        mPetView.setOnClickListener(new View.OnClickListener() {
+            AnimationDrawable moveAnim;
+
+            @Override
+            public void onClick(View v) {
+                Random rnd = new Random((new Date()).getTime());
+                int[] actions;
+                int randNum;
+                switch (petType) {
+                    case 1:
+                        // moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        // moveAnim.stop();
+                        actions = new int[]{
+                                R.drawable.pika_walk, R.drawable.pika_backwalk, R.drawable.pika_ball,
+                                R.drawable.pika_eat, R.drawable.pika_fall, R.drawable.pika_jump,
+                                R.drawable.pika_lightning, R.drawable.pika_swim};
+                        randNum = rnd.nextInt(actions.length);
+                        mPetView.setBackgroundResource(actions[randNum]);
+                        mSmallPetView.setBackgroundResource(R.drawable.pika_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        break;
+                    case 2:
+                        // moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        // moveAnim.stop();
+                        actions = new int[]{
+                                R.drawable.kid_walk, R.drawable.kid_bird, R.drawable.kid_change,
+                                R.drawable.kid_hang, R.drawable.kid_leg, R.drawable.kid_look,
+                                R.drawable.kid_skate, R.drawable.kid_vertical};
+                        randNum = rnd.nextInt(actions.length);
+                        mPetView.setBackgroundResource(actions[randNum]);
+                        mSmallPetView.setBackgroundResource(R.drawable.kid_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        break;
+                    case 3:
+                        // moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        // moveAnim.stop();
+                        actions = new int[]{
+                                R.drawable.meiko_walk, R.drawable.meiko_look, R.drawable.meiko_leg,
+                                R.drawable.meiko_hand, R.drawable.meiko_fall};
+                        randNum = rnd.nextInt(actions.length);
+                        mPetView.setBackgroundResource(actions[randNum]);
+                        mSmallPetView.setBackgroundResource(R.drawable.meiko_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        break;
+                    case 4:
+                        mPetView.setBackgroundResource(R.drawable.bear);
+                        mSmallPetView.setBackgroundResource(R.drawable.bear);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        mPetView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AnimationDrawable moveAnim;
+                switch(petType) {
+                    case 1:
+                        mPetView.setBackgroundResource(R.drawable.kid_walk);
+                        mSmallPetView.setBackgroundResource(R.drawable.kid_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        petType += 1;
+                        break;
+                    case 2:
+                        mPetView.setBackgroundResource(R.drawable.meiko_walk);
+                        mSmallPetView.setBackgroundResource(R.drawable.meiko_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        petType += 1;
+                        break;
+                    case 3:
+                        mPetView.setBackgroundResource(R.drawable.bear);
+                        mSmallPetView.setBackgroundResource(R.drawable.bear);
+                        petType += 1;
+                        break;
+                    case 4:
+                        mPetView.setBackgroundResource(R.drawable.pika_walk);
+                        mSmallPetView.setBackgroundResource(R.drawable.pika_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        petType = 1;
+                        break;
+                    default:
+                        break;
+                }
+                /**
+                 * 点击消息是否进行拦截？
+                 * 如果是true   不会触发后续事件
+                 * 如果是false  会触发后续事件 比如说单击事件
+                 */
+                return true;
+            }
+        });
     }
 
     @Override

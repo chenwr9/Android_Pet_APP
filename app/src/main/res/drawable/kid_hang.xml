@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 定义动画循环播放 -->
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="true">
+    <item android:drawable="@drawable/kid_hang1" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang2" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang3" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang4" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang5" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang6" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang7" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang8" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang9" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang10" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang11" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang12" android:duration="360" />
+    <item android:drawable="@drawable/kid_hang13" android:duration="360" />
+</animation-list>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 定义动画循环播放 -->
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/pet_dog1" android:duration="360" />
+    <!--<item android:drawable="@drawable/pet_dog2" android:duration="360" />-->
+    <!--<item android:drawable="@drawable/pet_dog3" android:duration="360" />-->
+    <item android:drawable="@drawable/pet_dog4" android:duration="360" />
+    <item android:drawable="@drawable/pet_dog5" android:duration="360" />
+    <!--<item android:drawable="@drawable/pet_dog6" android:duration="360" />-->
+</animation-list>

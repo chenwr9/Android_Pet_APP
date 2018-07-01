@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 定义动画循环播放 -->
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="true">
+    <item android:drawable="@drawable/pika_lightning1" android:duration="360" />
+    <item android:drawable="@drawable/pika_lightning2" android:duration="360" />
+    <item android:drawable="@drawable/pika_lightning" android:duration="360" />
+    <item android:drawable="@drawable/pika_lightning4" android:duration="360" />
+    <item android:drawable="@drawable/pika_lightning5" android:duration="360" />
+</animation-list>
