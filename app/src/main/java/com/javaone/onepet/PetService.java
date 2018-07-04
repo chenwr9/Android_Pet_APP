@@ -1,13 +1,17 @@
 package com.javaone.onepet;
 
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,20 +19,61 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import java.util.Random;
-import java.util.Date;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class PetService extends Service {
-    private WindowManager mWindowManager;
-    private WindowManager.LayoutParams mLayoutParams;
-    private WindowManager.LayoutParams mSmallLayoutParams;
-    private LinearLayout mPetView;//悬浮窗布局
-    private LinearLayout mSmallPetView;//贴边后显示的悬浮窗布局
+    private static WindowManager mWindowManager;
+    private static WindowManager.LayoutParams mLayoutParams;
+    private static WindowManager.LayoutParams mSmallLayoutParams;
+    private static WindowManager.LayoutParams messageWindowParams;
+    private static LinearLayout mPetView;      // 悬浮窗布局
+    private static LinearLayout mSmallPetView; // 贴边后显示的悬浮窗布局
+    private static MessageWindowView messageWindow;
     private ImageView mPetView_image;
     private int screenWidth, screenHeight;
-    private boolean isShowPetView, isShowSmallPetView;
+    private static boolean isShowPetView, isShowSmallPetView;
 
-    private int petType;
+
+    public static void createMessageWindow(Context context,
+                                           String msgUsrname,
+                                           String msgContent) {
+        if (messageWindow == null) {
+            messageWindow = new MessageWindowView(context, msgUsrname, msgContent);
+            if (messageWindowParams == null) {
+                messageWindowParams = new WindowManager.LayoutParams();
+                if (Build.VERSION.SDK_INT >= 26) {
+                    messageWindowParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+                } else {
+                    messageWindowParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+                }
+                messageWindowParams.format = PixelFormat.RGBA_8888;
+                messageWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                messageWindowParams.gravity = Gravity.LEFT | Gravity.TOP;
+                messageWindowParams.width = MessageWindowView.viewWidth;
+                messageWindowParams.height = MessageWindowView.viewHeight;
+            }
+            if (isShowSmallPetView) {
+                messageWindowParams.x = mSmallLayoutParams.x - MessageWindowView.viewWidth;
+                messageWindowParams.y = mSmallLayoutParams.y;
+            }
+            else if (isShowPetView) {
+                messageWindowParams.x = mLayoutParams.x - MessageWindowView.viewWidth;
+                messageWindowParams.y = mLayoutParams.y;
+            }
+            mWindowManager.addView(messageWindow, messageWindowParams);
+        }
+    }
+
+    public static void removeMessageWindow() {
+        if (messageWindow != null) {
+            mWindowManager.removeView(messageWindow);
+            messageWindow = null;
+        }
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -37,13 +82,9 @@ public class PetService extends Service {
 
     @Override
     public void onCreate() {
-        super.onCreate();
-
-        // pet type
-        petType = 1;
-
         isShowPetView = false;
         isShowSmallPetView = false;
+
         //获取mWindowManager对象
         mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         //取得窗口的宽度和高度
@@ -85,6 +126,7 @@ public class PetService extends Service {
         //获取small_pet_layout.xml布局文件
         mSmallPetView = (LinearLayout) inflater.inflate(R.layout.small_pet_layout, null);
 
+
         mPetView.setOnTouchListener(new View.OnTouchListener() {
             private float startX;//拖动开始之前悬浮窗的x位置
             private float startY;//拖动开始之前悬浮窗的y位置
@@ -94,7 +136,6 @@ public class PetService extends Service {
             private float nowY;//这次MotionEvent的y位置
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 final int action = event.getAction();
                 if (action == MotionEvent.ACTION_DOWN) {
                     lastX = event.getRawX();
@@ -187,110 +228,7 @@ public class PetService extends Service {
             }
         });
 
-        mPetView.setBackgroundResource(R.drawable.pika_walk);
-        mSmallPetView.setBackgroundResource(R.drawable.pika_walk1);
-        final AnimationDrawable moveAnim = (AnimationDrawable) mPetView.getBackground();
-        moveAnim.start();
-
-        mPetView.setOnClickListener(new View.OnClickListener() {
-            AnimationDrawable moveAnim;
-
-            @Override
-            public void onClick(View v) {
-                Random rnd = new Random((new Date()).getTime());
-                int[] actions;
-                int randNum;
-                switch (petType) {
-                    case 1:
-                        // moveAnim = (AnimationDrawable) mPetView.getBackground();
-                        // moveAnim.stop();
-                        actions = new int[]{
-                                R.drawable.pika_walk, R.drawable.pika_backwalk, R.drawable.pika_ball,
-                                R.drawable.pika_eat, R.drawable.pika_fall, R.drawable.pika_jump,
-                                R.drawable.pika_lightning, R.drawable.pika_swim};
-                        randNum = rnd.nextInt(actions.length);
-                        mPetView.setBackgroundResource(actions[randNum]);
-                        mSmallPetView.setBackgroundResource(R.drawable.pika_walk1);
-                        moveAnim = (AnimationDrawable) mPetView.getBackground();
-                        moveAnim.start();
-                        break;
-                    case 2:
-                        // moveAnim = (AnimationDrawable) mPetView.getBackground();
-                        // moveAnim.stop();
-                        actions = new int[]{
-                                R.drawable.kid_walk, R.drawable.kid_bird, R.drawable.kid_change,
-                                R.drawable.kid_hang, R.drawable.kid_leg, R.drawable.kid_look,
-                                R.drawable.kid_skate, R.drawable.kid_vertical};
-                        randNum = rnd.nextInt(actions.length);
-                        mPetView.setBackgroundResource(actions[randNum]);
-                        mSmallPetView.setBackgroundResource(R.drawable.kid_walk1);
-                        moveAnim = (AnimationDrawable) mPetView.getBackground();
-                        moveAnim.start();
-                        break;
-                    case 3:
-                        // moveAnim = (AnimationDrawable) mPetView.getBackground();
-                        // moveAnim.stop();
-                        actions = new int[]{
-                                R.drawable.meiko_walk, R.drawable.meiko_look, R.drawable.meiko_leg,
-                                R.drawable.meiko_hand, R.drawable.meiko_fall};
-                        randNum = rnd.nextInt(actions.length);
-                        mPetView.setBackgroundResource(actions[randNum]);
-                        mSmallPetView.setBackgroundResource(R.drawable.meiko_walk1);
-                        moveAnim = (AnimationDrawable) mPetView.getBackground();
-                        moveAnim.start();
-                        break;
-                    case 4:
-                        mPetView.setBackgroundResource(R.drawable.bear);
-                        mSmallPetView.setBackgroundResource(R.drawable.bear);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-
-        mPetView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                AnimationDrawable moveAnim;
-                switch(petType) {
-                    case 1:
-                        mPetView.setBackgroundResource(R.drawable.kid_walk);
-                        mSmallPetView.setBackgroundResource(R.drawable.kid_walk1);
-                        moveAnim = (AnimationDrawable) mPetView.getBackground();
-                        moveAnim.start();
-                        petType += 1;
-                        break;
-                    case 2:
-                        mPetView.setBackgroundResource(R.drawable.meiko_walk);
-                        mSmallPetView.setBackgroundResource(R.drawable.meiko_walk1);
-                        moveAnim = (AnimationDrawable) mPetView.getBackground();
-                        moveAnim.start();
-                        petType += 1;
-                        break;
-                    case 3:
-                        mPetView.setBackgroundResource(R.drawable.bear);
-                        mSmallPetView.setBackgroundResource(R.drawable.bear);
-                        petType += 1;
-                        break;
-                    case 4:
-                        mPetView.setBackgroundResource(R.drawable.pika_walk);
-                        mSmallPetView.setBackgroundResource(R.drawable.pika_walk1);
-                        moveAnim = (AnimationDrawable) mPetView.getBackground();
-                        moveAnim.start();
-                        petType = 1;
-                        break;
-                    default:
-                        break;
-                }
-                /**
-                 * 点击消息是否进行拦截？
-                 * 如果是true   不会触发后续事件
-                 * 如果是false  会触发后续事件 比如说单击事件
-                 */
-                return true;
-            }
-        });
+        super.onCreate();
     }
 
     @Override
