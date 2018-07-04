@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">OnePet</string>
+    <string name="my_accessibility_description">读取微信消息</string>
 </resources>
