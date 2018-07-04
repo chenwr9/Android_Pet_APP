@@ -1,5 +1,7 @@
 package com.javaone.onepet;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -22,15 +24,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        show_button = (Button)findViewById(R.id.btn_show_pet);
-        hide_button = (Button)findViewById(R.id.btn_hide_pet);
+        show_button = (Button) findViewById(R.id.btn_show_pet);
+        hide_button = (Button) findViewById(R.id.btn_hide_pet);
+
+        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        startActivity(intent);
 
         show_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //权限判断
                 if (Build.VERSION.SDK_INT >= 23) {
-                    if(!Settings.canDrawOverlays(getApplicationContext())) {
+                    if (!Settings.canDrawOverlays(getApplicationContext())) {
                         Toast.makeText(MainActivity.this, "需要开启悬浮窗权限", Toast.LENGTH_SHORT).show();
                         //启动Activity让用户授予悬浮窗权限
                         try {
@@ -51,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
                     petServiceIntent = new Intent(MainActivity.this, PetService.class);
                     getApplication().startService(petServiceIntent);
                 }
-//                finish();
             }
         });
 
