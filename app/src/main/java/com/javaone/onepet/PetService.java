@@ -34,9 +34,14 @@ public class PetService extends Service {
     private static MessageWindowView messageWindow;
     private ImageView mPetView_image;
     private int screenWidth, screenHeight;
-    private static boolean isShowPetView, isShowSmallPetView;
+    private static boolean isShowPetView, isShowSmallPetView, isMsgWindowView;
 
-
+    /**
+     * 创建微信消息弹窗
+     * @param context    上下文
+     * @param msgUsrname 记录发送消息的用户
+     * @param msgContent 记录发送消息的内容
+     */
     public static void createMessageWindow(Context context,
                                            String msgUsrname,
                                            String msgContent) {
@@ -44,6 +49,7 @@ public class PetService extends Service {
             messageWindow = new MessageWindowView(context, msgUsrname, msgContent);
             if (messageWindowParams == null) {
                 messageWindowParams = new WindowManager.LayoutParams();
+                // 需要根据API的版本设置悬浮窗的权限
                 if (Build.VERSION.SDK_INT >= 26) {
                     messageWindowParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
                 } else {
@@ -56,22 +62,29 @@ public class PetService extends Service {
                 messageWindowParams.width = MessageWindowView.viewWidth;
                 messageWindowParams.height = MessageWindowView.viewHeight;
             }
+            // 宠物贴边时弹窗的显示位置
             if (isShowSmallPetView) {
                 messageWindowParams.x = mSmallLayoutParams.x - MessageWindowView.viewWidth;
                 messageWindowParams.y = mSmallLayoutParams.y;
             }
+            // 宠物不贴边时弹窗的显示位置
             else if (isShowPetView) {
                 messageWindowParams.x = mLayoutParams.x - MessageWindowView.viewWidth;
                 messageWindowParams.y = mLayoutParams.y;
             }
             mWindowManager.addView(messageWindow, messageWindowParams);
+            isMsgWindowView = true;
         }
     }
 
+    /**
+     * 移除微信消息弹窗
+     */
     public static void removeMessageWindow() {
         if (messageWindow != null) {
             mWindowManager.removeView(messageWindow);
             messageWindow = null;
+            isMsgWindowView = false;
         }
     }
 
@@ -84,6 +97,7 @@ public class PetService extends Service {
     public void onCreate() {
         isShowPetView = false;
         isShowSmallPetView = false;
+        isMsgWindowView = false;
 
         //获取mWindowManager对象
         mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
@@ -147,6 +161,7 @@ public class PetService extends Service {
                     nowY = event.getRawY();
                     mLayoutParams.x += (int) (nowX - lastX);
                     mLayoutParams.y += (int) (nowY - lastY);
+                    // 更新宠物的位置
                     if (mLayoutParams.x < 0) {
                         mLayoutParams.x = 0;
                     } else if (mLayoutParams.x > PetService.this.screenWidth - mLayoutParams.width) {
@@ -156,6 +171,17 @@ public class PetService extends Service {
                         mLayoutParams.y = 0;
                     } else if (mLayoutParams.y > PetService.this.screenHeight - mLayoutParams.height) {
                         mLayoutParams.y = PetService.this.screenHeight - mLayoutParams.height;
+                    }
+
+                    // 更新微信消息弹窗的位置
+                    if (isMsgWindowView) {
+                        if (mLayoutParams.x < PetService.this.screenWidth - MessageWindowView.viewWidth) {
+                            messageWindowParams.x = mLayoutParams.x + mLayoutParams.width + 5;
+                        } else {
+                            messageWindowParams.x = mLayoutParams.x - MessageWindowView.viewWidth;
+                        }
+                        messageWindowParams.y = mLayoutParams.y;
+                        mWindowManager.updateViewLayout(messageWindow, messageWindowParams);
                     }
                     mWindowManager.updateViewLayout(mPetView, mLayoutParams);
                     lastX = nowX;
@@ -210,6 +236,17 @@ public class PetService extends Service {
                         mSmallLayoutParams.y = 0;
                     } else if (mSmallLayoutParams.y > PetService.this.screenHeight - mSmallLayoutParams.height) {
                         mSmallLayoutParams.y = PetService.this.screenHeight - mSmallLayoutParams.height;
+                    }
+
+                    // 更新微信消息弹窗的位置
+                    if (isMsgWindowView) {
+                        if (mSmallLayoutParams.x < PetService.this.screenWidth - MessageWindowView.viewWidth) {
+                            messageWindowParams.x = mSmallLayoutParams.x + mSmallLayoutParams.width + 5;
+                        } else {
+                            messageWindowParams.x = mSmallLayoutParams.x - MessageWindowView.viewWidth;
+                        }
+                        messageWindowParams.y = mSmallLayoutParams.y;
+                        mWindowManager.updateViewLayout(messageWindow, messageWindowParams);
                     }
                     mWindowManager.updateViewLayout(mSmallPetView, mSmallLayoutParams);
                     lastX = nowX;

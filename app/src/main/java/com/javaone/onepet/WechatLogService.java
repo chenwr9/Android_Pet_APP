@@ -11,7 +11,10 @@ import android.widget.Toast;
 import java.util.List;
 
 class WechatLogService extends AccessibilityService {
-
+    /**
+     * 监听通知栏中微信接收消息的事件
+     * @param event
+     */
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         int eventType = event.getEventType();
@@ -27,6 +30,11 @@ class WechatLogService extends AccessibilityService {
                         if (content.contains(":")) {
                             msgUsername = content.substring(0, content.indexOf(':'));
                             msgContent  = content.substring(content.indexOf(':')+1);
+                            // 若字符内容大于15则需要省略
+                            if (msgContent.length() > 15) {
+                                msgContent = msgContent.substring(0, 15);
+                                msgContent += "...";
+                            }
                             Notification notification = (Notification)event.getParcelableData();
                             PetService.removeMessageWindow();
                             PetService.createMessageWindow(this, msgUsername, msgContent);
