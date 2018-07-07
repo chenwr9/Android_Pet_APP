@@ -18,6 +18,7 @@ import java.lang.reflect.Field;
 public class MainActivity extends AppCompatActivity {
     private Button show_button;
     private Button hide_button;
+    private Button pair_button;
     private Intent petServiceIntent;
 
     @Override
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         show_button = (Button) findViewById(R.id.btn_show_pet);
         hide_button = (Button) findViewById(R.id.btn_hide_pet);
+        pair_button = (Button) findViewById(R.id.btn_pair_pet);
 
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
         startActivity(intent);
@@ -64,6 +66,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 petServiceIntent = new Intent(MainActivity.this, PetService.class);
                 getApplication().stopService(petServiceIntent);
+            }
+        });
+        
+        pair_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(v.getContext(), BlueToothService.class);
+                startActivity(intent);
             }
         });
     }
