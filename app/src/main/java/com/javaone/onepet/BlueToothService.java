@@ -16,9 +16,9 @@ import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -29,11 +29,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class BlueToothService extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
-    private Button search_button;
-    private Button closeconnect;
-    private Button dialog;
-    private EditText editText;
+public class BlueToothService extends Activity implements AdapterView.OnItemClickListener {
+    private TextView getmessage;
+    private TextView remind;
+    private String mmsg="";
     //用来保存搜索到的设备信息
     private List<String> bluetoothDevices = new ArrayList<String>();
     //获取到蓝牙适配器
@@ -55,75 +54,56 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
     private OutputStream os;
     private String str = "";
     //dialog输入
-    // private  EditText edit = new EditText(BlueToothService.this);
+   // private  EditText edit = new EditText(BlueToothService.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bluetooth_layout);
-        search_button = (Button) findViewById(R.id.search);
-        closeconnect = (Button) findViewById(R.id.close);
-        dialog = (Button) findViewById(R.id.dialog);
         //为listview设置字符串转数组适配器
         mArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
                 android.R.id.text1, bluetoothDevices);
-        closeconnect.setOnClickListener(new View.OnClickListener()
-        {
+        getmessage = (TextView) findViewById(R.id.getmessage);
+        remind = (TextView) findViewById(R.id.remind);
 
-            @Override
-            public void onClick(View v) {
-                try {
-                    clientSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        // 为listView设置item点击事件侦听
+        if (mBluetoothAdapter == null)//不存在蓝牙
+        {
+            Toast.makeText(BlueToothService.this, "未安装蓝牙硬件或驱动，请重试！", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled())//蓝牙未开启
+        {
+            Toast.makeText(BlueToothService.this, "检测到蓝牙未开启，请开启蓝牙!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivity(intent);
+
+            //请求可被搜索
+            Intent discoverableIntent = new Intent(mBluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(mBluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+            startActivity(discoverableIntent);
+        }
+        if(mBluetoothAdapter.isEnabled()) {
+            if (mBluetoothAdapter.isDiscovering()) {
+                //如果正在搜索，要停止。因为startDiscovery()不能重复调用
+                mBluetoothAdapter.cancelDiscovery();
+            }
+            mBluetoothAdapter.startDiscovery();
+
+            list = (ListView) findViewById(R.id.paired_devices_listview);
+            //为listview绑定适配器
+            list.setAdapter(mArrayAdapter);
+            //用Set集合保存已配对设备
+            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+            if (pairedDevices.size() > 0) //已配对过的设备
+            {
+                for (BluetoothDevice device : pairedDevices) {
+                    bluetoothDevices.add(device.getName() + ":" + device.getAddress());
                 }
             }
-        });
+            initBlue();
+        }
 
-        dialog.setOnClickListener(this);
-
-     //   search_button.setOnClickListener(new View.OnClickListener() {
-      //      @Override
-       //     public void onClick(View v) {
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                // 为listView设置item点击事件侦听
-                if (mBluetoothAdapter == null)//不存在蓝牙
-                {
-                    Toast.makeText(BlueToothService.this, "未安装蓝牙硬件或驱动，请重试！", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled())//蓝牙未开启
-                {
-                    Toast.makeText(BlueToothService.this, "检测到蓝牙未开启，请开启蓝牙!", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivity(intent);
-                    //请求可被搜索
-                    Intent discoverableIntent = new Intent(mBluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                    discoverableIntent.putExtra(mBluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-                    startActivity(discoverableIntent);
-                }
-
-                if(mBluetoothAdapter.isEnabled()) {
-                    if (mBluetoothAdapter.isDiscovering()) {
-                        //如果正在搜索，要停止。因为startDiscovery()不能重复调用
-                        mBluetoothAdapter.cancelDiscovery();
-                    }
-                    mBluetoothAdapter.startDiscovery();
-
-                    list = (ListView) findViewById(R.id.paired_devices_listview);
-                    //为listview绑定适配器
-                    list.setAdapter(mArrayAdapter);
-                    //用Set集合保存已配对设备
-                    Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-                    if (pairedDevices.size() > 0) //已配对过的设备
-                    {
-                        for (BluetoothDevice device : pairedDevices) {
-                            bluetoothDevices.add(device.getName() + ":" + device.getAddress());
-                        }
-                    }
-                    initBlue();
-                }
-       //     }
-       // });
     }
 
     private void initBlue()
@@ -162,80 +142,79 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
     };
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // ShowDialog();
-        //获取这个设备的信息
+        str = "";
         String s = mArrayAdapter.getItem(position);
-        String address = s.substring(s.indexOf(":")+1).trim();
-        if(mBluetoothAdapter.isDiscovering())
-        {
+        String address = s.substring(s.indexOf(":") + 1).trim();
+        System.out.println(address+"-------------------------------" );
+        if (mBluetoothAdapter.isDiscovering()) {
             mBluetoothAdapter.cancelDiscovery();
         }
-
         //通过地址获取到该设备
         selectDevice = mBluetoothAdapter.getRemoteDevice(address);
-        try {
-            // 判断客户端接口是否为空
-            if (clientSocket == null) {
-                // 获取到客户端接口
-                clientSocket = selectDevice.createRfcommSocketToServiceRecord(SERVICE_UUID);
-                // 向服务端发送连接
-                clientSocket.connect();
-                // 获取到输出流，向外写数据
-                os = clientSocket.getOutputStream();
-            }
-            // 判断是否拿到输出流
-            if (os != null) {
-                // 需要发送的信息
-                // String text ="";
-                // editText = (EditText) findViewById(R.id.input);
-                //  text = editText.getText().toString();
-                // 以utf-8的格式发送出去
-                // os.write(text.getBytes("UTF-8"));
-                os.write(str.getBytes("UTF-8"));
-                // 告诉用户发送成功
-                Toast.makeText(getApplicationContext(), "成功发送消息："+str, Toast.LENGTH_LONG).show();
-                str = "";
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            // 如果发生异常则告诉用户发送失败
-            Toast.makeText(getApplicationContext(), "发送信息失败 ！", Toast.LENGTH_LONG).show();
-        }
+        bluetoothDevices.clear();
+        bluetoothDevices.add("聊天对象: "+s);
+        remind.setText("聊天中");
+      //  if(str == "")
+    //    {
+            final EditText et = new EditText(this);
+
+            new android.support.v7.app.AlertDialog.Builder(this).setTitle("聊天")
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setView(et)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            String input = et.getText().toString();
+                            if (input.equals("")) {
+                                Toast.makeText(getApplicationContext(), "输入内容不能为空！" + input, Toast.LENGTH_LONG).show();
+                            } else {
+                                str = input;
+                                mmsg += "  我方宠物: "+ str+"\n"+"\n";
+                                getmessage.setText(mmsg);
+                                try {
+                                    // 判断客户端接口是否为空
+                                    if (clientSocket == null) {
+                                        clientSocket = selectDevice.createRfcommSocketToServiceRecord(SERVICE_UUID);
+                                        clientSocket.connect();
+                                        os = clientSocket.getOutputStream();
+                                    }
+                                    // 判断是否拿到输出流
+                                    if (os != null) {
+                                        // 需要发送的信息
+                                        os.write(str.getBytes("UTF-8"));
+                                        Toast.makeText(getApplicationContext(), "成功发送消息：" + str, Toast.LENGTH_LONG).show();
+                                        str = "";
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    // 如果发生异常则告诉用户发送失败
+                                    str = "";
+                                    //实例接收客户端传过来的数据线程
+                                    thread = new AcceptThread();
+                                    thread.start();
+                                    Toast.makeText(getApplicationContext(), "发送信息失败 ！", Toast.LENGTH_LONG).show();
+                                }
+                                // Intent intent = new Intent();
+                                // intent.putExtra("content", input);
+                                //  intent.setClass(BlueToothService.this,BlueToothService.class);
+                                //   startActivity(intent);
+                            }
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .show();
+     //   }
     }
 
 
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Toast.makeText(BlueToothService.this, (String) msg.obj, Toast.LENGTH_LONG).show();
+            Toast.makeText(BlueToothService.this, "收到消息："+(String) msg.obj, Toast.LENGTH_LONG).show();
+            mmsg += "  对方宠物: "+ (String) msg.obj+"\n"+"\n";
+            getmessage.setText(mmsg);
         }
     };
 
-    @Override
-    public void onClick(View v) {
-        final EditText et = new EditText(this);
-
-        new android.support.v7.app.AlertDialog.Builder(this).setTitle("聊天")
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .setView(et)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        String input = et.getText().toString();
-                        if (input.equals("")) {
-                            Toast.makeText(getApplicationContext(), "输入内容不能为空！" + input, Toast.LENGTH_LONG).show();
-                        }
-                        else {
-                            str = input;
-                            // Intent intent = new Intent();
-                            // intent.putExtra("content", input);
-                            //  intent.setClass(BlueToothService.this,BlueToothService.class);
-                            //   startActivity(intent);
-                        }
-                    }
-                })
-                .setNegativeButton("取消", null)
-                .show();
-    }
 
     private class AcceptThread extends Thread
     {
@@ -261,6 +240,7 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
                 is = socket.getInputStream();
                 os = socket.getOutputStream();
 
+
                 while(true)
                 {
                     //创建一个128字节的缓冲
@@ -269,6 +249,7 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
                     int count = is.read(buffer);
                     Message msg = new Message();
                     msg.obj = new String(buffer,0,count,"utf-8");
+                    System.out.println(msg.obj);
                     handler.sendMessage(msg);
                 }
             } catch (IOException e) {
@@ -276,4 +257,5 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
             }
         }
     }
+
 }
