@@ -1,40 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <Button
         android:id="@+id/search"
         android:layout_width="fill_parent"
-        android:layout_height="97dp"
+        android:layout_height="90dp"
+        android:layout_alignParentTop="true"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_alignParentTop="true"
-        android:textSize = "65px"
-        android:text="点击搜索附近的蓝牙" />
+        android:text="点击搜索并开启聊天"
+        android:textSize="50px" />
+
+
+    <Button
+        android:id="@+id/dialog"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignStart="@+id/search"
+        android:layout_below="@+id/search"
+        android:text="输入文字"
+        android:textSize="40px" />
+
+    <Button
+        android:id="@+id/close"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignEnd="@+id/search"
+        android:layout_below="@+id/search"
+        android:text="关闭聊天"
+        android:textSize="40px" />
 
     <TextView
-        android:id="@+id/text_show"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/search"
-        android:text="搜索到的蓝牙列表如下：" />
+        android:id="@+id/remind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/search"
+        android:layout_below="@+id/close"
+        android:text="蓝牙列表如下：" />
+
+
 
     <ListView
         android:id="@+id/paired_devices_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/input"
-        android:layout_below="@id/text_show"/>
-
-    <EditText
-        android:id="@+id/input"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
-
+        android:layout_below="@id/remind"/>
 
 
 </RelativeLayout>
