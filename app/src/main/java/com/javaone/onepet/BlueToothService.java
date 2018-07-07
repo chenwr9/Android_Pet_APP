@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -28,9 +29,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class BlueToothService extends Activity implements AdapterView.OnItemClickListener
-{
+public class BlueToothService extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private Button search_button;
+    private Button closeconnect;
+    private Button dialog;
     private EditText editText;
     //用来保存搜索到的设备信息
     private List<String> bluetoothDevices = new ArrayList<String>();
@@ -51,17 +53,35 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
     private BluetoothSocket clientSocket;
     // 获取到向设备写的输出流，全局变量，否则连接在方法执行完就结束了
     private OutputStream os;
+    private String str = "";
     //dialog输入
-   // private final EditText edit = new EditText(BlueToothService.this);
+   // private  EditText edit = new EditText(BlueToothService.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bluetooth_layout);
         search_button = (Button) findViewById(R.id.search);
+        closeconnect = (Button) findViewById(R.id.close);
+        dialog = (Button) findViewById(R.id.dialog);
         //为listview设置字符串转数组适配器
         mArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
                 android.R.id.text1, bluetoothDevices);
-        search_button.setOnClickListener(new View.OnClickListener() {
+        closeconnect.setOnClickListener(new View.OnClickListener()
+        {
+
+            @Override
+            public void onClick(View v) {
+                try {
+                    clientSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        dialog.setOnClickListener(this);
+
+                search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -99,7 +119,7 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
                         bluetoothDevices.add(device.getName() + ":" + device.getAddress());
                     }
                 }
-                initBlue();
+                 initBlue();
             }
         });
     }
@@ -140,7 +160,7 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
     };
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //ShowDialog();
+       // ShowDialog();
         //获取这个设备的信息
         String s = mArrayAdapter.getItem(position);
         String address = s.substring(s.indexOf(":")+1).trim();
@@ -164,13 +184,15 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
             // 判断是否拿到输出流
             if (os != null) {
                 // 需要发送的信息
-                String text ="";
-                editText = (EditText) findViewById(R.id.input);
-                text = editText.getText().toString();
+               // String text ="";
+               // editText = (EditText) findViewById(R.id.input);
+             //  text = editText.getText().toString();
                 // 以utf-8的格式发送出去
-                os.write(text.getBytes("UTF-8"));
+               // os.write(text.getBytes("UTF-8"));
+                os.write(str.getBytes("UTF-8"));
                 // 告诉用户发送成功
-                Toast.makeText(getApplicationContext(), "消息已发送给对方！", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "成功发送消息："+str, Toast.LENGTH_LONG).show();
+                str = "";
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -179,18 +201,6 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
         }
     }
 
-  /*  private void ShowDialog() {
-        AlertDialog.Builder inputDialog = new AlertDialog.Builder(BlueToothService.this);
-        inputDialog.setTitle("请输入要发送的内容").setView(edit);
-        inputDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(BlueToothService.this,
-                        edit.getText().toString(),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }).show();
-    }*/
 
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
@@ -198,6 +208,32 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
             Toast.makeText(BlueToothService.this, (String) msg.obj, Toast.LENGTH_LONG).show();
         }
     };
+
+    @Override
+    public void onClick(View v) {
+        final EditText et = new EditText(this);
+
+        new android.support.v7.app.AlertDialog.Builder(this).setTitle("聊天")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setView(et)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String input = et.getText().toString();
+                        if (input.equals("")) {
+                            Toast.makeText(getApplicationContext(), "输入内容不能为空！" + input, Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            str = input;
+                           // Intent intent = new Intent();
+                           // intent.putExtra("content", input);
+                          //  intent.setClass(BlueToothService.this,BlueToothService.class);
+                         //   startActivity(intent);
+                        }
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
 
     private class AcceptThread extends Thread
     {
