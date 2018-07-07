@@ -74,7 +74,7 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
         }
         if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled())//蓝牙未开启
         {
-            Toast.makeText(BlueToothService.this, "检测到蓝牙未开启，请开启蓝牙!", Toast.LENGTH_LONG).show();
+           //nn Toast.makeText(BlueToothService.this, "检测到蓝牙未开启，请开启蓝牙!", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivity(intent);
 
@@ -82,7 +82,24 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
             Intent discoverableIntent = new Intent(mBluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             discoverableIntent.putExtra(mBluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
             startActivity(discoverableIntent);
+
+            new android.support.v7.app.AlertDialog.Builder(this).setTitle("请返回主界面重新进入！")
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(BlueToothService.this,MainActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .create().show();
         }
+
         if(mBluetoothAdapter.isEnabled()) {
             if (mBluetoothAdapter.isDiscovering()) {
                 //如果正在搜索，要停止。因为startDiscovery()不能重复调用
