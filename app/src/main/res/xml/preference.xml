@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="宠物信息">
+        <EditTextPreference
+            android:key="name_key"
+            android:defaultValue=" "
+            android:summary=""
+            android:title="姓名"
+            android:icon="@drawable/pet_name"/>
+        <ListPreference
+            android:key="sex_key"
+            android:defaultValue="男"
+            android:title="性别"
+            android:summary=""
+            android:entries="@array/sex_lists"
+            android:entryValues="@array/sex_lists"
+            android:dialogTitle="选择性别"
+            android:icon="@drawable/pet_sex"/>
+        <EditTextPreference
+            android:key="level_key"
+            android:defaultValue="1"
+            android:summary=""
+            android:title="等级"
+            android:icon="@drawable/set_level"/>
+        <ListPreference
+            android:key="character_key"
+            android:title="性格"
+            android:summary=""
+            android:entries="@array/character_lists"
+            android:entryValues="@array/character_lists"
+            android:dialogTitle="选择性格"
+            android:icon="@drawable/set_character"
+            />
+    </PreferenceCategory>
+    <!--
+    <PreferenceCategory android:title="相关权限设置">
+        <CheckBoxPreference
+            android:key="start_key"
+            android:summary="应用程序随机启动服务"
+            android:title="是否随机启动"
+            />
+        <PreferenceScreen
+            android:key="notice_key"
+            android:summary="宠物协助获取微信消息"
+            android:title="是否开启微信通知服务"
+            >
+        </PreferenceScreen>
+    </PreferenceCategory>
+    -->
+</PreferenceScreen>

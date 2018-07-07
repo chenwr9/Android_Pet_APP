@@ -10,7 +10,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 import java.util.List;
 
-class WechatLogService extends AccessibilityService {
+public class WechatLogService extends AccessibilityService {
     /**
      * 监听通知栏中微信接收消息的事件
      * @param event
@@ -38,6 +38,19 @@ class WechatLogService extends AccessibilityService {
                             Notification notification = (Notification)event.getParcelableData();
                             PetService.removeMessageWindow();
                             PetService.createMessageWindow(this, msgUsername, msgContent);
+                        }
+                        else {
+                            msgUsername = "收到新消息";
+                            msgContent = "请开启通知显示消息详情获取内容";
+                            // 若字符内容大于15则需要省略
+                            if (msgContent.length() > 15) {
+                                msgContent = msgContent.substring(0, 15);
+                                msgContent += "...";
+                            }
+                            Notification notification = (Notification)event.getParcelableData();
+                            PetService.removeMessageWindow();
+                            PetService.createMessageWindow(this, msgUsername, msgContent);
+
                         }
                     }
                 }

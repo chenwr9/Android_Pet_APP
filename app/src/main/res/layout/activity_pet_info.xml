@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/petMenu"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/primary">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp">
+
+        <com.javaone.onepet.CircleImageView
+            android:id="@+id/profile_image"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/pika" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/linearlayout_shape"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/menu_setting"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:clickable="true"
+            android:drawablePadding="1.0dip"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:text="宠物中心"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2.0dip"
+            android:background="@drawable/ic_account_line" />
+
+        <RelativeLayout
+            android:id="@+id/nick_name_frame"
+            android:layout_width="match_parent"
+            android:layout_height="50.0dip"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/nick_name_str"
+                android:layout_width="wrap_content"
+                android:layout_height="50.0dip"
+                android:layout_marginLeft="20dp"
+                android:clickable="true"
+                android:drawablePadding="1.0dip"
+                android:gravity="center_vertical"
+                android:paddingLeft="15.0dip"
+                android:paddingRight="10.0dip"
+                android:text="昵称"
+                android:textColor="#202329"
+                android:textSize="16.0sp" />
+
+            <ImageView
+                android:id="@+id/nick_name_set"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:src="@drawable/right"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/nick_name"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_toLeftOf="@id/nick_name_set"
+                android:gravity="center_vertical"
+                android:paddingRight="10dp"
+                android:text="未设置"
+                android:textColor="@android:color/black"
+                android:textSize="16.0sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2.0dip"
+                android:layout_below="@id/nick_name"
+                android:background="@drawable/ic_account_line" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/sex_set_frame"
+            android:layout_width="match_parent"
+            android:layout_height="50.0dip">
+
+            <TextView
+                android:id="@+id/sex_str"
+                android:layout_width="wrap_content"
+                android:layout_height="50.0dip"
+                android:layout_marginLeft="20dp"
+                android:clickable="true"
+                android:drawablePadding="1.0dip"
+                android:gravity="center_vertical"
+                android:paddingLeft="15.0dip"
+                android:paddingRight="10.0dip"
+                android:text="性别"
+                android:textColor="#202329"
+                android:textSize="16.0sp" />
+
+            <ImageView
+                android:id="@+id/sex_set"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:src="@drawable/right"
+                android:visibility="invisible" />
+
+            <RadioGroup
+                android:id="@+id/sex_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_toLeftOf="@id/sex_set"
+                android:clickable="false"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checked="false"
+                    android:enabled="true"
+                    android:text="male"
+                    android:textColor="@android:color/black" />
+
+                <RadioButton
+                    android:id="@+id/female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:text="Female"
+                    android:textColor="@android:color/darker_gray" />
+            </RadioGroup>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/level_frame"
+            android:layout_width="match_parent"
+            android:layout_height="50.0dip">
+
+            <TextView
+                android:id="@+id/level_str"
+                android:layout_width="wrap_content"
+                android:layout_height="50.0dip"
+                android:layout_marginLeft="20dp"
+                android:clickable="true"
+                android:drawablePadding="1.0dip"
+                android:gravity="center_vertical"
+                android:paddingLeft="15.0dip"
+                android:paddingRight="10.0dip"
+                android:text="级别"
+                android:textColor="#202329"
+                android:textSize="16.0sp" />
+
+            <ImageView
+                android:id="@+id/level_set"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:src="@drawable/right"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/level_value"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_toLeftOf="@id/level_set"
+                android:gravity="center_vertical"
+                android:paddingRight="10dp"
+                android:text="Level 1"
+                android:textColor="@android:color/black"
+                android:textSize="16.0sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2.0dip"
+                android:layout_below="@id/level_str"
+                android:background="@drawable/ic_account_line" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/character_frame"
+            android:layout_width="match_parent"
+            android:layout_height="50.0dip">
+
+            <TextView
+                android:id="@+id/character_str"
+                android:layout_width="wrap_content"
+                android:layout_height="50.0dip"
+                android:layout_marginLeft="20dp"
+                android:clickable="true"
+                android:drawablePadding="1.0dip"
+                android:gravity="center_vertical"
+                android:paddingLeft="15.0dip"
+                android:paddingRight="10.0dip"
+                android:text="性格"
+                android:textColor="#202329"
+                android:textSize="16.0sp" />
+
+            <ImageView
+                android:id="@+id/character_set"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:src="@drawable/right"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/character_value"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_toLeftOf="@id/character_set"
+                android:gravity="center_vertical"
+                android:paddingRight="10dp"
+                android:text="未设置"
+                android:textColor="@android:color/black"
+                android:textSize="16.0sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2.0dip"
+                android:layout_below="@id/character_set"
+                android:background="@drawable/ic_account_line" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/other_setting"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:clickable="true"
+            android:drawablePadding="1.0dip"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:text="其他设置"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2.0dip"
+            android:background="@drawable/ic_account_line" />
+
+
+        <RelativeLayout
+            android:id="@+id/partner_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/partner_str"
+                android:layout_width="wrap_content"
+                android:layout_height="50.0dip"
+                android:layout_marginLeft="20dp"
+                android:clickable="true"
+                android:drawablePadding="1.0dip"
+                android:gravity="center_vertical"
+                android:paddingLeft="15.0dip"
+                android:paddingRight="10.0dip"
+                android:text="对象"
+                android:textColor="#202329"
+                android:textSize="16.0sp" />
+
+            <ImageView
+                android:id="@+id/partner_set"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:src="@drawable/right"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/partner_value"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_toLeftOf="@id/partner_set"
+                android:gravity="center_vertical"
+                android:paddingRight="10dp"
+                android:text="未结对"
+                android:textColor="@android:color/black"
+                android:textSize="16.0sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/wechat_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/wechat_str"
+                android:layout_width="wrap_content"
+                android:layout_height="50.0dip"
+                android:layout_marginLeft="20dp"
+                android:clickable="true"
+                android:drawablePadding="1.0dip"
+                android:gravity="center_vertical"
+                android:paddingLeft="15.0dip"
+                android:paddingRight="10.0dip"
+                android:text="微信"
+                android:textColor="#202329"
+                android:textSize="16.0sp" />
+
+            <ImageView
+                android:id="@+id/wechat_set"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:src="@drawable/right"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/wechat_value"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_toLeftOf="@id/wechat_set"
+                android:gravity="center_vertical"
+                android:paddingRight="10dp"
+                android:text="未绑定"
+                android:textColor="@android:color/black"
+                android:textSize="16.0sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2.0dip"
+                android:layout_below="@id/wechat_set"
+                android:background="@drawable/ic_account_line" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2.0dip"
+            android:background="@drawable/ic_account_line" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_show_pet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_style"
+            android:fontFamily="sans-serif"
+            android:text="show"
+            android:textColor="@android:color/black" />
+
+        <Button
+            android:id="@+id/btn_hide_pet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_style"
+            android:fontFamily="sans-serif"
+            android:text="hide"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+
+</LinearLayout>

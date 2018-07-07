@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sex_lists">
+        <item>男</item>
+        <item>女</item>
+    </string-array>
+    <string-array name="character_lists">
+        <item>乖巧</item>
+        <item>自恋</item>
+        <item>傲娇</item>
+        <item>可爱</item>
+        <item>暖心</item>
+    </string-array>
+</resources>

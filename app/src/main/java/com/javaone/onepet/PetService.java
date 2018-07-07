@@ -1,17 +1,13 @@
 package com.javaone.onepet;
 
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,10 +15,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import java.util.Random;
+import java.util.Date;
 
 public class PetService extends Service {
     private static WindowManager mWindowManager;
@@ -36,7 +30,9 @@ public class PetService extends Service {
     private int screenWidth, screenHeight;
     private static boolean isShowPetView, isShowSmallPetView, isMsgWindowView;
 
-    /**
+    private int petType;
+
+	    /**
      * 创建微信消息弹窗
      * @param context    上下文
      * @param msgUsrname 记录发送消息的用户
@@ -64,12 +60,22 @@ public class PetService extends Service {
             }
             // 宠物贴边时弹窗的显示位置
             if (isShowSmallPetView) {
-                messageWindowParams.x = mSmallLayoutParams.x - MessageWindowView.viewWidth;
+                if (mSmallLayoutParams.x == 0) {
+                    messageWindowParams.x = mSmallLayoutParams.width;
+                } else {
+                    messageWindowParams.x = mSmallLayoutParams.x - MessageWindowView.viewWidth;
+                }
                 messageWindowParams.y = mSmallLayoutParams.y;
             }
             // 宠物不贴边时弹窗的显示位置
             else if (isShowPetView) {
-                messageWindowParams.x = mLayoutParams.x - MessageWindowView.viewWidth;
+                DisplayMetrics dm = new DisplayMetrics();
+                mWindowManager.getDefaultDisplay().getMetrics(dm);
+                if (mLayoutParams.x < dm.widthPixels - MessageWindowView.viewWidth - mLayoutParams.width) {
+                    messageWindowParams.x = mLayoutParams.x + mLayoutParams.width + 5;
+                } else {
+                    messageWindowParams.x = mLayoutParams.x - MessageWindowView.viewWidth;
+                }
                 messageWindowParams.y = mLayoutParams.y;
             }
             mWindowManager.addView(messageWindow, messageWindowParams);
@@ -87,7 +93,7 @@ public class PetService extends Service {
             isMsgWindowView = false;
         }
     }
-
+	
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -95,10 +101,15 @@ public class PetService extends Service {
 
     @Override
     public void onCreate() {
+        super.onCreate();
+		
+        // Pet type
+        petType = 1;
+
         isShowPetView = false;
         isShowSmallPetView = false;
-        isMsgWindowView = false;
-
+		isMsgWindowView = false;
+		
         //获取mWindowManager对象
         mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         //取得窗口的宽度和高度
@@ -140,7 +151,6 @@ public class PetService extends Service {
         //获取small_pet_layout.xml布局文件
         mSmallPetView = (LinearLayout) inflater.inflate(R.layout.small_pet_layout, null);
 
-
         mPetView.setOnTouchListener(new View.OnTouchListener() {
             private float startX;//拖动开始之前悬浮窗的x位置
             private float startY;//拖动开始之前悬浮窗的y位置
@@ -150,6 +160,7 @@ public class PetService extends Service {
             private float nowY;//这次MotionEvent的y位置
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
                 final int action = event.getAction();
                 if (action == MotionEvent.ACTION_DOWN) {
                     lastX = event.getRawX();
@@ -161,7 +172,7 @@ public class PetService extends Service {
                     nowY = event.getRawY();
                     mLayoutParams.x += (int) (nowX - lastX);
                     mLayoutParams.y += (int) (nowY - lastY);
-                    // 更新宠物的位置
+					// 更新宠物的位置
                     if (mLayoutParams.x < 0) {
                         mLayoutParams.x = 0;
                     } else if (mLayoutParams.x > PetService.this.screenWidth - mLayoutParams.width) {
@@ -172,8 +183,8 @@ public class PetService extends Service {
                     } else if (mLayoutParams.y > PetService.this.screenHeight - mLayoutParams.height) {
                         mLayoutParams.y = PetService.this.screenHeight - mLayoutParams.height;
                     }
-
-                    // 更新微信消息弹窗的位置
+					
+					// 更新微信消息弹窗的位置
                     if (isMsgWindowView) {
                         if (mLayoutParams.x < PetService.this.screenWidth - MessageWindowView.viewWidth) {
                             messageWindowParams.x = mLayoutParams.x + mLayoutParams.width + 5;
@@ -183,6 +194,7 @@ public class PetService extends Service {
                         messageWindowParams.y = mLayoutParams.y;
                         mWindowManager.updateViewLayout(messageWindow, messageWindowParams);
                     }
+					
                     mWindowManager.updateViewLayout(mPetView, mLayoutParams);
                     lastX = nowX;
                     lastY = nowY;
@@ -197,6 +209,12 @@ public class PetService extends Service {
                         isShowSmallPetView = true;
                         mWindowManager.removeView(mPetView);
                         mWindowManager.addView(mSmallPetView, mSmallLayoutParams);
+						if (isMsgWindowView) {
+                            // 弹窗往左向宠物靠拢
+                            messageWindowParams.x = mSmallLayoutParams.width + 5;
+                            messageWindowParams.y = mSmallLayoutParams.y;
+                            mWindowManager.updateViewLayout(messageWindow, messageWindowParams);
+                        }
                     } else if (mLayoutParams.x >= PetService.this.screenWidth - mLayoutParams.width - 5) {
                         // 右贴边
                         mSmallLayoutParams.x = PetService.this.screenWidth - mSmallLayoutParams.width;
@@ -205,7 +223,13 @@ public class PetService extends Service {
                         isShowSmallPetView = true;
                         mWindowManager.removeView(mPetView);
                         mWindowManager.addView(mSmallPetView, mSmallLayoutParams);
-                    }
+                        if (isMsgWindowView) {
+                            // 弹窗往右向宠物靠拢
+                            messageWindowParams.x = mSmallLayoutParams.x - MessageWindowView.viewWidth;
+                            messageWindowParams.y = mSmallLayoutParams.y;
+                            mWindowManager.updateViewLayout(messageWindow, messageWindowParams);
+                        }
+					}
                 }
                 return false;
             }
@@ -237,7 +261,7 @@ public class PetService extends Service {
                     } else if (mSmallLayoutParams.y > PetService.this.screenHeight - mSmallLayoutParams.height) {
                         mSmallLayoutParams.y = PetService.this.screenHeight - mSmallLayoutParams.height;
                     }
-
+					
                     // 更新微信消息弹窗的位置
                     if (isMsgWindowView) {
                         if (mSmallLayoutParams.x < PetService.this.screenWidth - MessageWindowView.viewWidth) {
@@ -247,7 +271,7 @@ public class PetService extends Service {
                         }
                         messageWindowParams.y = mSmallLayoutParams.y;
                         mWindowManager.updateViewLayout(messageWindow, messageWindowParams);
-                    }
+                    }					
                     mWindowManager.updateViewLayout(mSmallPetView, mSmallLayoutParams);
                     lastX = nowX;
                     lastY = nowY;
@@ -259,13 +283,125 @@ public class PetService extends Service {
                         isShowSmallPetView = false;
                         mWindowManager.removeView(mSmallPetView);
                         mWindowManager.addView(mPetView, mLayoutParams);
-                    }
+                        if (isMsgWindowView) {
+                            if (mLayoutParams.x < PetService.this.screenWidth - MessageWindowView.viewWidth) {
+                                messageWindowParams.x = mLayoutParams.x + mLayoutParams.width + 5;
+                            } else {
+                                messageWindowParams.x = mLayoutParams.x - MessageWindowView.viewWidth;
+                            }
+                            messageWindowParams.y = mLayoutParams.y;
+                            mWindowManager.updateViewLayout(messageWindow, messageWindowParams);
+                        }
+					}
                 }
                 return false;
             }
         });
 
-        super.onCreate();
+        mPetView.setBackgroundResource(R.drawable.pika_walk);
+        mSmallPetView.setBackgroundResource(R.drawable.pika_walk1);
+        final AnimationDrawable moveAnim = (AnimationDrawable) mPetView.getBackground();
+        moveAnim.start();
+
+        mPetView.setOnClickListener(new View.OnClickListener() {
+            AnimationDrawable moveAnim;
+
+            @Override
+            public void onClick(View v) {
+                Random rnd = new Random((new Date()).getTime());
+                int[] actions;
+                int randNum;
+                switch (petType) {
+                    case 1:
+                        // moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        // moveAnim.stop();
+                        actions = new int[]{
+                                R.drawable.pika_walk, R.drawable.pika_backwalk, R.drawable.pika_ball,
+                                R.drawable.pika_eat, R.drawable.pika_fall, R.drawable.pika_jump,
+                                R.drawable.pika_lightning, R.drawable.pika_swim};
+                        randNum = rnd.nextInt(actions.length);
+                        mPetView.setBackgroundResource(actions[randNum]);
+                        mSmallPetView.setBackgroundResource(R.drawable.pika_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        break;
+                    case 2:
+                        // moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        // moveAnim.stop();
+                        actions = new int[]{
+                                R.drawable.kid_walk, R.drawable.kid_bird, R.drawable.kid_change,
+                                R.drawable.kid_hang, R.drawable.kid_leg, R.drawable.kid_look,
+                                R.drawable.kid_skate, R.drawable.kid_vertical};
+                        randNum = rnd.nextInt(actions.length);
+                        mPetView.setBackgroundResource(actions[randNum]);
+                        mSmallPetView.setBackgroundResource(R.drawable.kid_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        break;
+                    case 3:
+                        // moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        // moveAnim.stop();
+                        actions = new int[]{
+                                R.drawable.meiko_walk, R.drawable.meiko_look, R.drawable.meiko_leg,
+                                R.drawable.meiko_hand, R.drawable.meiko_fall};
+                        randNum = rnd.nextInt(actions.length);
+                        mPetView.setBackgroundResource(actions[randNum]);
+                        mSmallPetView.setBackgroundResource(R.drawable.meiko_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        break;
+                    case 4:
+                        mPetView.setBackgroundResource(R.drawable.bear);
+                        mSmallPetView.setBackgroundResource(R.drawable.bear);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        mPetView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AnimationDrawable moveAnim;
+                switch(petType) {
+                    case 1:
+                        mPetView.setBackgroundResource(R.drawable.kid_walk);
+                        mSmallPetView.setBackgroundResource(R.drawable.kid_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        petType += 1;
+                        break;
+                    case 2:
+                        mPetView.setBackgroundResource(R.drawable.meiko_walk);
+                        mSmallPetView.setBackgroundResource(R.drawable.meiko_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        petType += 1;
+                        break;
+                    case 3:
+                        mPetView.setBackgroundResource(R.drawable.bear);
+                        mSmallPetView.setBackgroundResource(R.drawable.bear);
+                        petType += 1;
+                        break;
+                    case 4:
+                        mPetView.setBackgroundResource(R.drawable.pika_walk);
+                        mSmallPetView.setBackgroundResource(R.drawable.pika_walk1);
+                        moveAnim = (AnimationDrawable) mPetView.getBackground();
+                        moveAnim.start();
+                        petType = 1;
+                        break;
+                    default:
+                        break;
+                }
+                /**
+                 * 点击消息是否进行拦截？
+                 * 如果是true   不会触发后续事件
+                 * 如果是false  会触发后续事件 比如说单击事件
+                 */
+                return true;
+            }
+        });
     }
 
     @Override

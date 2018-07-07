@@ -55,7 +55,7 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
     private OutputStream os;
     private String str = "";
     //dialog输入
-   // private  EditText edit = new EditText(BlueToothService.this);
+    // private  EditText edit = new EditText(BlueToothService.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,9 +81,9 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
 
         dialog.setOnClickListener(this);
 
-                search_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+     //   search_button.setOnClickListener(new View.OnClickListener() {
+      //      @Override
+       //     public void onClick(View v) {
                 mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                 // 为listView设置item点击事件侦听
                 if (mBluetoothAdapter == null)//不存在蓝牙
@@ -96,32 +96,34 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
                     Toast.makeText(BlueToothService.this, "检测到蓝牙未开启，请开启蓝牙!", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivity(intent);
+                    //请求可被搜索
+                    Intent discoverableIntent = new Intent(mBluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                    discoverableIntent.putExtra(mBluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+                    startActivity(discoverableIntent);
                 }
-                //请求可被搜索
-                Intent discoverableIntent = new Intent(mBluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                discoverableIntent.putExtra(mBluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-                startActivity(discoverableIntent);
 
-                if(mBluetoothAdapter.isDiscovering()){
-                    //如果正在搜索，要停止。因为startDiscovery()不能重复调用
-                    mBluetoothAdapter.cancelDiscovery();
-                }
-                mBluetoothAdapter.startDiscovery();
-
-                list = (ListView) findViewById(R.id.paired_devices_listview);
-                //为listview绑定适配器
-                list.setAdapter(mArrayAdapter);
-                //用Set集合保存已配对设备
-                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-                if (pairedDevices.size() > 0) //已配对过的设备
-                {
-                    for (BluetoothDevice device : pairedDevices) {
-                        bluetoothDevices.add(device.getName() + ":" + device.getAddress());
+                if(mBluetoothAdapter.isEnabled()) {
+                    if (mBluetoothAdapter.isDiscovering()) {
+                        //如果正在搜索，要停止。因为startDiscovery()不能重复调用
+                        mBluetoothAdapter.cancelDiscovery();
                     }
+                    mBluetoothAdapter.startDiscovery();
+
+                    list = (ListView) findViewById(R.id.paired_devices_listview);
+                    //为listview绑定适配器
+                    list.setAdapter(mArrayAdapter);
+                    //用Set集合保存已配对设备
+                    Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                    if (pairedDevices.size() > 0) //已配对过的设备
+                    {
+                        for (BluetoothDevice device : pairedDevices) {
+                            bluetoothDevices.add(device.getName() + ":" + device.getAddress());
+                        }
+                    }
+                    initBlue();
                 }
-                 initBlue();
-            }
-        });
+       //     }
+       // });
     }
 
     private void initBlue()
@@ -160,7 +162,7 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
     };
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-       // ShowDialog();
+        // ShowDialog();
         //获取这个设备的信息
         String s = mArrayAdapter.getItem(position);
         String address = s.substring(s.indexOf(":")+1).trim();
@@ -184,11 +186,11 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
             // 判断是否拿到输出流
             if (os != null) {
                 // 需要发送的信息
-               // String text ="";
-               // editText = (EditText) findViewById(R.id.input);
-             //  text = editText.getText().toString();
+                // String text ="";
+                // editText = (EditText) findViewById(R.id.input);
+                //  text = editText.getText().toString();
                 // 以utf-8的格式发送出去
-               // os.write(text.getBytes("UTF-8"));
+                // os.write(text.getBytes("UTF-8"));
                 os.write(str.getBytes("UTF-8"));
                 // 告诉用户发送成功
                 Toast.makeText(getApplicationContext(), "成功发送消息："+str, Toast.LENGTH_LONG).show();
@@ -224,10 +226,10 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
                         }
                         else {
                             str = input;
-                           // Intent intent = new Intent();
-                           // intent.putExtra("content", input);
-                          //  intent.setClass(BlueToothService.this,BlueToothService.class);
-                         //   startActivity(intent);
+                            // Intent intent = new Intent();
+                            // intent.putExtra("content", input);
+                            //  intent.setClass(BlueToothService.this,BlueToothService.class);
+                            //   startActivity(intent);
                         }
                     }
                 })
