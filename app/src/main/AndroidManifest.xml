@@ -105,6 +105,8 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/test" />
         </service>
+        
+        <activity android:name=".BlueToothService"></activity>
     </application>
 
 </manifest>
