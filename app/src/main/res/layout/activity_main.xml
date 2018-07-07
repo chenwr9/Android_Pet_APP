@@ -19,5 +19,15 @@
         android:layout_alignStart="@id/btn_show_pet"
         android:layout_marginTop="50dp"
         android:text="hide"/>
+    
+       <Button
+        android:id="@+id/btn_pair_pet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/btn_show_pet"
+        android:layout_below="@id/btn_hide_pet"
+        android:layout_marginTop="50dp"
+        android:text="pair" />
+
 
 </RelativeLayout>
