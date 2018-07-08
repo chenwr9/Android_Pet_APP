@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent_alarm);
                 break;
             case R.id.setting:
-                Intent intent_change = new Intent(MainActivity.this, SettingActivity.class);
+                Intent intent_change = new Intent(MainActivity.this, PetInfoActivity.class);
                 startActivity(intent_change);
                 break;
             case R.id.random:

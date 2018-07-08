@@ -33,6 +33,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbarset"
-        android:background="@drawable/bg1">
+        android:background="@drawable/preference_bg2">
     </FrameLayout>
 </RelativeLayout>

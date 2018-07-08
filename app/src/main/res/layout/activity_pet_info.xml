@@ -4,27 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="@color/primary">
+    android:background="#ffffff">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
         android:paddingLeft="10dp"
-        android:paddingTop="10dp">
+        android:paddingTop="10dp"
+        android:layout_marginBottom="10dp">
 
         <com.javaone.onepet.CircleImageView
             android:id="@+id/profile_image"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/pika" />
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
+        android:layout_below="@id/menu_setting"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="0dp"
@@ -33,33 +35,37 @@
 
         <TextView
             android:id="@+id/menu_setting"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:clickable="true"
             android:drawablePadding="1.0dip"
-            android:gravity="center_vertical"
             android:paddingLeft="15dp"
             android:paddingRight="10dp"
-            android:text="宠物中心"
-            android:textColor="@color/colorAccent"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:text="宠物属性"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="14sp" />
 
         <View
+            android:id="@+id/blue_line"
             android:layout_width="match_parent"
-            android:layout_height="2.0dip"
-            android:background="@drawable/ic_account_line" />
+            android:layout_height="15.0dip"
+            android:layout_below="@id/menu_setting"
+            android:background="@drawable/ic_account_line_blue" />
 
         <RelativeLayout
             android:id="@+id/nick_name_frame"
-            android:layout_width="match_parent"
-            android:layout_height="50.0dip"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_below="@id/blue_line"
+            android:layout_margin="5dp"
             android:clickable="true">
 
             <TextView
                 android:id="@+id/nick_name_str"
-                android:layout_width="wrap_content"
-                android:layout_height="50.0dip"
+                android:layout_width="100dip"
+                android:layout_height="30.0dip"
                 android:layout_marginLeft="20dp"
                 android:clickable="true"
                 android:drawablePadding="1.0dip"
@@ -67,46 +73,58 @@
                 android:paddingLeft="15.0dip"
                 android:paddingRight="10.0dip"
                 android:text="昵称"
+                android:textAlignment="center"
                 android:textColor="#202329"
                 android:textSize="16.0sp" />
 
-            <ImageView
-                android:id="@+id/nick_name_set"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:gravity="center_vertical"
-                android:src="@drawable/right"
-                android:visibility="invisible" />
+            <TextView
+                android:id="@+id/nick_name_str_eng"
+                android:layout_width="100dip"
+                android:layout_height="20dip"
+                android:layout_alignLeft="@id/nick_name_str"
+                android:layout_below="@id/nick_name_str"
+                android:text="Nickname"
+                android:textAlignment="center"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/nick_name"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_toLeftOf="@id/nick_name_set"
+                android:layout_width="180dp"
+                android:layout_height="35dp"
+                android:layout_toRightOf="@id/nick_name_str"
                 android:gravity="center_vertical"
                 android:paddingRight="10dp"
-                android:text="未设置"
+                android:text="ABC"
+                android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="16.0sp" />
 
             <View
+                android:id="@+id/nickname_line"
+                android:layout_width="180dp"
+                android:layout_height="15dp"
+                android:layout_alignLeft="@id/nick_name"
+                android:layout_below="@id/nick_name"
+                android:background="@drawable/ic_account_line_purple" />
+
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="2.0dip"
-                android:layout_below="@id/nick_name"
+                android:layout_below="@id/nickname_line"
                 android:background="@drawable/ic_account_line" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/sex_set_frame"
             android:layout_width="match_parent"
-            android:layout_height="50.0dip">
+            android:layout_height="50.0dip"
+            android:layout_margin="5dp"
+            android:layout_below="@id/nick_name_frame">
 
             <TextView
                 android:id="@+id/sex_str"
-                android:layout_width="wrap_content"
-                android:layout_height="50.0dip"
+                android:layout_width="100.0dip"
+                android:layout_height="30.0dip"
                 android:layout_marginLeft="20dp"
                 android:clickable="true"
                 android:drawablePadding="1.0dip"
@@ -114,8 +132,19 @@
                 android:paddingLeft="15.0dip"
                 android:paddingRight="10.0dip"
                 android:text="性别"
+                android:textAlignment="center"
                 android:textColor="#202329"
                 android:textSize="16.0sp" />
+
+            <TextView
+                android:id="@+id/sex_str_eng"
+                android:layout_width="100dip"
+                android:layout_height="20dip"
+                android:layout_alignLeft="@id/sex_str"
+                android:layout_below="@id/sex_str"
+                android:text="Gender"
+                android:textAlignment="center"
+                android:textColor="@android:color/black" />
 
             <ImageView
                 android:id="@+id/sex_set"
@@ -129,41 +158,53 @@
 
             <RadioGroup
                 android:id="@+id/sex_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_toLeftOf="@id/sex_set"
+                android:layout_width="180dp"
+                android:layout_height="35dp"
+                android:layout_toRightOf="@id/sex_str"
                 android:clickable="false"
                 android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/male"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="35dp"
                     android:checked="false"
                     android:enabled="true"
-                    android:text="male"
+                    android:text="Male"
                     android:textColor="@android:color/black" />
 
                 <RadioButton
                     android:id="@+id/female"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="35dp"
                     android:enabled="false"
                     android:text="Female"
                     android:textColor="@android:color/darker_gray" />
             </RadioGroup>
+
+            <View
+                android:id="@+id/sex_line"
+                android:layout_width="180dp"
+                android:layout_height="15dp"
+                android:layout_alignLeft="@id/sex_btn"
+                android:layout_below="@id/sex_btn"
+                android:background="@drawable/ic_account_line_purple" />
+
         </RelativeLayout>
 
 
         <RelativeLayout
             android:id="@+id/level_frame"
             android:layout_width="match_parent"
-            android:layout_height="50.0dip">
+            android:layout_height="50.0dip"
+            android:layout_below="@id/sex_set_frame"
+            android:layout_margin="5dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/level_str"
-                android:layout_width="wrap_content"
-                android:layout_height="50.0dip"
+                android:layout_width="100.0dip"
+                android:layout_height="30.0dip"
                 android:layout_marginLeft="20dp"
                 android:clickable="true"
                 android:drawablePadding="1.0dip"
@@ -171,8 +212,19 @@
                 android:paddingLeft="15.0dip"
                 android:paddingRight="10.0dip"
                 android:text="级别"
+                android:textAlignment="center"
                 android:textColor="#202329"
                 android:textSize="16.0sp" />
+
+            <TextView
+                android:id="@+id/level_str_eng"
+                android:layout_width="100dip"
+                android:layout_height="20dip"
+                android:layout_alignLeft="@id/level_str"
+                android:layout_below="@id/level_str"
+                android:text="Characteristic"
+                android:textAlignment="center"
+                android:textColor="@android:color/black" />
 
             <ImageView
                 android:id="@+id/level_set"
@@ -186,31 +238,42 @@
 
             <TextView
                 android:id="@+id/level_value"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_toLeftOf="@id/level_set"
+                android:layout_width="180dp"
+                android:layout_height="35dp"
+                android:layout_toRightOf="@id/level_str"
                 android:gravity="center_vertical"
                 android:paddingRight="10dp"
                 android:text="Level 1"
+                android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="16.0sp" />
 
             <View
+                android:id="@+id/level_line"
+                android:layout_width="180dp"
+                android:layout_height="15dp"
+                android:layout_alignLeft="@id/level_value"
+                android:layout_below="@id/level_value"
+                android:background="@drawable/ic_account_line_purple" />
+
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="2.0dip"
-                android:layout_below="@id/level_str"
+                android:layout_below="@id/level_line"
                 android:background="@drawable/ic_account_line" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/character_frame"
             android:layout_width="match_parent"
-            android:layout_height="50.0dip">
+            android:layout_height="50.0dip"
+            android:layout_margin="5dp"
+            android:layout_below="@id/level_frame">
 
             <TextView
                 android:id="@+id/character_str"
-                android:layout_width="wrap_content"
-                android:layout_height="50.0dip"
+                android:layout_width="100.0dip"
+                android:layout_height="30.0dip"
                 android:layout_marginLeft="20dp"
                 android:clickable="true"
                 android:drawablePadding="1.0dip"
@@ -218,8 +281,19 @@
                 android:paddingLeft="15.0dip"
                 android:paddingRight="10.0dip"
                 android:text="性格"
+                android:textAlignment="center"
                 android:textColor="#202329"
                 android:textSize="16.0sp" />
+
+            <TextView
+                android:id="@+id/character_eng"
+                android:layout_width="100dip"
+                android:layout_height="20dip"
+                android:layout_alignLeft="@id/character_str"
+                android:layout_below="@id/character_str"
+                android:text="Characteristic"
+                android:textAlignment="center"
+                android:textColor="@android:color/black" />
 
             <ImageView
                 android:id="@+id/character_set"
@@ -233,14 +307,23 @@
 
             <TextView
                 android:id="@+id/character_value"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_toLeftOf="@id/character_set"
+                android:layout_width="180dip"
+                android:layout_height="35dip"
+                android:layout_toRightOf="@id/character_str"
                 android:gravity="center_vertical"
                 android:paddingRight="10dp"
-                android:text="未设置"
+                android:text="乖巧"
+                android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="16.0sp" />
+
+            <View
+                android:id="@+id/character_line"
+                android:layout_width="180dp"
+                android:layout_height="15dp"
+                android:layout_alignLeft="@id/character_value"
+                android:layout_below="@id/character_value"
+                android:background="@drawable/ic_account_line_purple" />
 
             <View
                 android:layout_width="match_parent"
@@ -250,44 +333,72 @@
 
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/modify_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_below="@id/character_frame"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/btn_style"
+            android:text="修改属性"
+            android:textAlignment="center" />
+
         <TextView
             android:id="@+id/other_setting"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/modify_btn"
+            android:layout_centerHorizontal="true"
             android:clickable="true"
             android:drawablePadding="1.0dip"
             android:gravity="center_vertical"
             android:paddingLeft="15dp"
             android:paddingRight="10dp"
             android:text="其他设置"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorAccent"/>
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp" />
 
         <View
+            android:id="@+id/blue_line_2"
             android:layout_width="match_parent"
-            android:layout_height="2.0dip"
-            android:background="@drawable/ic_account_line" />
+            android:layout_height="15dp"
+            android:layout_below="@id/other_setting"
+            android:background="@drawable/ic_account_line_blue" />
 
 
         <RelativeLayout
             android:id="@+id/partner_frame"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_below="@id/blue_line_2">
 
             <TextView
                 android:id="@+id/partner_str"
-                android:layout_width="wrap_content"
-                android:layout_height="50.0dip"
+                android:layout_width="100.0dip"
+                android:layout_height="33dp"
                 android:layout_marginLeft="20dp"
                 android:clickable="true"
                 android:drawablePadding="1.0dip"
                 android:gravity="center_vertical"
                 android:paddingLeft="15.0dip"
                 android:paddingRight="10.0dip"
-                android:text="对象"
+                android:text="蓝牙配对"
+                android:textAlignment="center"
                 android:textColor="#202329"
                 android:textSize="16.0sp" />
+
+            <TextView
+                android:id="@+id/partner_str_eng"
+                android:layout_width="100dip"
+                android:layout_height="20dip"
+                android:layout_alignLeft="@id/partner_str"
+                android:layout_below="@id/partner_str"
+                android:text="Bluetooth"
+                android:textAlignment="center"
+                android:textColor="@android:color/black" />
 
             <ImageView
                 android:id="@+id/partner_set"
@@ -301,35 +412,56 @@
 
             <TextView
                 android:id="@+id/partner_value"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_toLeftOf="@id/partner_set"
+                android:layout_width="180.0dip"
+                android:layout_height="35.0dip"
+                android:layout_toRightOf="@id/partner_str"
                 android:gravity="center_vertical"
                 android:paddingRight="10dp"
-                android:text="未结对"
+                android:text="未配对"
+                android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="16.0sp" />
+
+            <View
+                android:id="@+id/partner_line"
+                android:layout_width="180dp"
+                android:layout_height="15dp"
+                android:layout_alignLeft="@id/partner_value"
+                android:layout_below="@id/partner_value"
+                android:background="@drawable/ic_account_line_purple" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/wechat_frame"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/partner_frame">
 
             <TextView
                 android:id="@+id/wechat_str"
-                android:layout_width="wrap_content"
-                android:layout_height="50.0dip"
+                android:layout_width="100.0dip"
+                android:layout_height="30.0dip"
                 android:layout_marginLeft="20dp"
                 android:clickable="true"
                 android:drawablePadding="1.0dip"
                 android:gravity="center_vertical"
                 android:paddingLeft="15.0dip"
                 android:paddingRight="10.0dip"
-                android:text="微信"
+                android:text="微信通知"
+                android:textAlignment="center"
                 android:textColor="#202329"
                 android:textSize="16.0sp" />
+
+            <TextView
+                android:id="@+id/wechat_str_eng"
+                android:layout_width="100dip"
+                android:layout_height="20dip"
+                android:layout_alignLeft="@id/wechat_str"
+                android:layout_below="@id/wechat_str"
+                android:text="WeChat"
+                android:textAlignment="center"
+                android:textColor="@android:color/black" />
 
             <ImageView
                 android:id="@+id/wechat_set"
@@ -343,14 +475,23 @@
 
             <TextView
                 android:id="@+id/wechat_value"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_toLeftOf="@id/wechat_set"
+                android:layout_width="180.0dip"
+                android:layout_height="35.0dip"
+                android:layout_toRightOf="@id/wechat_str"
                 android:gravity="center_vertical"
                 android:paddingRight="10dp"
-                android:text="未绑定"
+                android:text="未开启"
+                android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="16.0sp" />
+
+            <View
+                android:id="@+id/wechat_line"
+                android:layout_width="180dp"
+                android:layout_height="15dp"
+                android:layout_alignLeft="@id/wechat_value"
+                android:layout_below="@id/wechat_value"
+                android:background="@drawable/ic_account_line_purple" />
 
             <View
                 android:layout_width="match_parent"
@@ -363,9 +504,10 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2.0dip"
-            android:background="@drawable/ic_account_line" />
+            android:background="@drawable/ic_account_line_blue"
+            android:layout_below="@id/wechat_frame"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
