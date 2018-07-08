@@ -20,8 +20,7 @@ import android.widget.Toast;
 import java.lang.reflect.Field;
 
 public class PetInfoActivity extends AppCompatActivity {
-    private Button show_button;
-    private Button hide_button;
+    private Button modify;
     private TextView nick_name;
     private RadioGroup sex_group;
     private RadioButton male, female;
@@ -35,8 +34,7 @@ public class PetInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pet_info);
-        show_button = (Button)findViewById(R.id.btn_show_pet);
-        hide_button = (Button)findViewById(R.id.btn_hide_pet);
+        modify = (Button)findViewById(R.id.modify_btn);
         nick_name = (TextView)findViewById(R.id.nick_name);
         sex_group = (RadioGroup)findViewById(R.id.sex_btn);
         male = (RadioButton)findViewById(R.id.male);
@@ -77,42 +75,12 @@ public class PetInfoActivity extends AppCompatActivity {
 
         }*/
         showSettingInfo();
-
-        show_button.setOnClickListener(new View.OnClickListener() {
+        modify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //权限判断
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if(!Settings.canDrawOverlays(getApplicationContext())) {
-                        Toast.makeText(PetInfoActivity.this, "需要开启悬浮窗权限", Toast.LENGTH_SHORT).show();
-                        //启动Activity让用户授予悬浮窗权限
-                        try {
-                            Class clazz = Settings.class;
-                            Field field = clazz.getDeclaredField("ACTION_MANAGE_OVERLAY_PERMISSION");
-                            Intent settingIntent = new Intent(field.get(null).toString());
-                            settingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            settingIntent.setData(Uri.parse("package:" + getPackageName()));
-                            startActivity(settingIntent);
-                        } catch (Exception e) {
-                            Log.e("PetService", Log.getStackTraceString(e));
-                        }
-                    } else {
-                        petServiceIntent = new Intent(PetInfoActivity.this, PetService.class);
-                        getApplication().startService(petServiceIntent);
-                    }
-                } else {
-                    petServiceIntent = new Intent(PetInfoActivity.this, PetService.class);
-                    getApplication().startService(petServiceIntent);
-                }
-//                finish();
-            }
-        });
-
-        hide_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                petServiceIntent = new Intent(PetInfoActivity.this, PetService.class);
-                getApplication().stopService(petServiceIntent);
+                Intent intent = new Intent(PetInfoActivity.this, SettingActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
