@@ -61,14 +61,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.show:
                 showFloatWindow();
-                show.setClickable(false);
+//                show.setClickable(false);
                 break;
             case R.id.hide:
                 hideFloatWindow();
-                show.setClickable(true);
+//                show.setClickable(true);
                 break;
             case R.id.change:
-
+                PetService.getInstant().changeModel();
                 break;
             case R.id.wechat:
                 Intent intent_wechat = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
@@ -119,16 +119,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 petServiceIntent = new Intent(MainActivity.this, PetService.class);
                 getApplication().startService(petServiceIntent);
+                show.setClickable(false);
             }
         } else {
             petServiceIntent = new Intent(MainActivity.this, PetService.class);
             getApplication().startService(petServiceIntent);
+            show.setClickable(false);
         }
     }
 
     private void hideFloatWindow() {
         petServiceIntent = new Intent(MainActivity.this, PetService.class);
         getApplication().stopService(petServiceIntent);
+        show.setClickable(true);
     }
 
     private void randomSetting() {
