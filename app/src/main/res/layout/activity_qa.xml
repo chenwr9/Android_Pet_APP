@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/qa_title"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="OnePet使用 常见Q&amp;A"
+        android:textAlignment="center"
+        android:textColor="@color/primary_green"
+        android:textSize="20dp" />
+
+    <ScrollView
+        android:layout_below="@+id/qa_title"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/qa"
+                android:textColor="#000000"
+                android:textSize="15dp"/>
+
+    </ScrollView>
+
+</LinearLayout>
