@@ -14,8 +14,8 @@
         android:layout_height="100dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginTop="25dp"
         app:srcCompat="@drawable/mainscreen_toptitle" />
 
     <ImageView
@@ -142,7 +142,7 @@
             <ImageView
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3" />
+                android:layout_weight="3"/>
 
             <ImageView
                 android:id="@+id/setting"
@@ -154,7 +154,7 @@
             <ImageView
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3" />
+                android:layout_weight="3"/>
 
             <ImageView
                 android:id="@+id/random"
@@ -166,19 +166,19 @@
             <ImageView
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3" />
+                android:layout_weight="3"/>
 
             <ImageView
                 android:id="@+id/staticpet"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/mainscreen_staticpet" />
+                app:srcCompat="@drawable/mainscreen_button_qa" />
 
             <ImageView
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3" />
+                android:layout_weight="3"/>
 
         </LinearLayout>
 
