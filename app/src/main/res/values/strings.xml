@@ -39,4 +39,15 @@
     <string name="answer_hint">答案输在这儿...</string>
     <string name="input_complete">输入好了</string>
     <string name="alarm_complete">闹钟时间到</string>
+
+    <string name="qa">
+        Q：如何使微信弹窗显示消息内容？
+        \nA：在微信界面中，打开\"我\"→\"设置\"→\"新消息提醒\"界面，设置\"通知显示消息详情\"即可
+        \n
+        \nQ:
+        \nA:
+        \n
+        \nQ:
+        \nA:
+    </string>
 </resources>
