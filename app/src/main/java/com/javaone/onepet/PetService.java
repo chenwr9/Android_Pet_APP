@@ -437,26 +437,26 @@ public class PetService extends Service {
         switch(petType) {
             case 1:
                 mPetView.setBackgroundResource(R.drawable.kid_walk);
-                mSmallPetView.setBackgroundResource(R.drawable.kid_walk1);
+//                mSmallPetView.setBackgroundResource(R.drawable.kid_walk1);
                 moveAnim = (AnimationDrawable) mPetView.getBackground();
                 moveAnim.start();
                 petType += 1;
                 break;
             case 2:
                 mPetView.setBackgroundResource(R.drawable.meiko_walk);
-                mSmallPetView.setBackgroundResource(R.drawable.meiko_walk1);
+//                mSmallPetView.setBackgroundResource(R.drawable.meiko_walk1);
                 moveAnim = (AnimationDrawable) mPetView.getBackground();
                 moveAnim.start();
                 petType += 1;
                 break;
             case 3:
                 mPetView.setBackgroundResource(R.drawable.bear);
-                mSmallPetView.setBackgroundResource(R.drawable.bear);
+//                mSmallPetView.setBackgroundResource(R.drawable.bear);
                 petType += 1;
                 break;
             case 4:
                 mPetView.setBackgroundResource(R.drawable.pika_walk);
-                mSmallPetView.setBackgroundResource(R.drawable.pika_walk1);
+//                mSmallPetView.setBackgroundResource(R.drawable.pika_walk1);
                 moveAnim = (AnimationDrawable) mPetView.getBackground();
                 moveAnim.start();
                 petType = 1;
