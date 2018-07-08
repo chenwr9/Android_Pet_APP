@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.view.View;
 import android.widget.Toast;
 
+import com.javaone.onepet.Alarm.AlarmService;
 import com.javaone.onepet.Alarm.activity.AlarmMainActivity;
 
 import java.lang.reflect.Field;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView wechat, bluetooth, alarm;
     private ImageView setting, random, qa;
     private Intent petServiceIntent;
+	private AlarmService.RebootReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,13 +141,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setNegativeButton("否", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(MainActivity.this, "不设置随机启动~", Toast.LENGTH_SHORT).show();
+                        try{
+                            if(myReceiver != null) {
+                                registerReceiver(myReceiver, new IntentFilter("android.intent.action.BOOT_COMPLETED"));
+                                Toast.makeText(MainActivity.this, "关闭随机启动~", Toast.LENGTH_SHORT).show();
+                                myReceiver = null;
+                            }
+                            else {
+                                Toast.makeText(MainActivity.this, "未设置随机启动~", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
                 })
                 .setPositiveButton("是", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(MainActivity.this, "设置随机启动~", Toast.LENGTH_SHORT).show();
+                        try{
+                            myReceiver = new AlarmService.RebootReceiver();
+                            registerReceiver(myReceiver, new IntentFilter("android.intent.action.BOOT_COMPLETED"));
+                            Toast.makeText(MainActivity.this, "设置随机启动~", Toast.LENGTH_SHORT).show();
+                        }
+                        catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
                 }).create();             //创建AlertDialog对象
         dialog.show();
