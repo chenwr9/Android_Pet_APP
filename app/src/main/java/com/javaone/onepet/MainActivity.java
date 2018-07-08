@@ -24,7 +24,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private ImageView show, hide, change;
     private ImageView wechat, bluetooth, alarm;
-    private ImageView setting, random;
+    private ImageView setting, random, qa;
     private Intent petServiceIntent;
 
     @Override
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         alarm = (ImageView)findViewById(R.id.alarm);
         setting = (ImageView)findViewById(R.id.setting);
         random = (ImageView)findViewById(R.id.random);
+        qa = (ImageView)findViewById(R.id.qa);
 
         show.setOnClickListener(this);
         hide.setOnClickListener(this);
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         alarm.setOnClickListener(this);
         setting.setOnClickListener(this);
         random.setOnClickListener(this);
+        qa.setOnClickListener(this);
     }
 
     @Override
@@ -88,6 +90,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.random:
                 randomSetting();
+                break;
+            case R.id.qa:
+                Intent intent_qa = new Intent(MainActivity.this, QaActivity.class);
+                startActivity(intent_qa);
                 break;
             default:
                 break;
