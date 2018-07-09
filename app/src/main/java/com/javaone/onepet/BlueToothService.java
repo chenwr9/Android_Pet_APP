@@ -158,7 +158,6 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
     private void  showDialog()
     {
         final EditText et = new EditText(this);
-
         new android.support.v7.app.AlertDialog.Builder(this).setTitle("聊天")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setView(et)
@@ -236,6 +235,7 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
         }
         //通过地址获取到该设备
         selectDevice = mBluetoothAdapter.getRemoteDevice(desaddress);
+        list.setVisibility(View.GONE);
         if(judge_first)
         {
             try {
