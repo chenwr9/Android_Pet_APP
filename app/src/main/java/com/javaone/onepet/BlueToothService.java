@@ -89,7 +89,7 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
             discoverableIntent.putExtra(mBluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
             startActivity(discoverableIntent);
 
-            new android.support.v7.app.AlertDialog.Builder(this).setTitle("请返回主界面重新进入！")
+            new android.support.v7.app.AlertDialog.Builder(this).setTitle("首次配对，请返回主界面重新进入！")
                     .setIcon(android.R.drawable.ic_dialog_info)
                     .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         @Override
