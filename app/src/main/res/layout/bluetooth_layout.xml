@@ -2,32 +2,39 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
+        <TextView
+            android:id="@+id/remind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="点击蓝牙进行聊天(可滑动列表)：" />
 
-    <TextView
-        android:id="@+id/remind"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text="点击蓝牙进行聊天(可滑动列表)：" />
-
-    <ListView
-        android:id="@+id/paired_devices_listview"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="198dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_below="@id/remind"
-        />
+        >
+
+        <ListView
+            android:id="@+id/paired_devices_listview"
+            android:layout_width="match_parent"
+            android:layout_height="198dp"
+            />
 
 
 
-    <TextView
-        android:id="@+id/getmessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/paired_devices_listview"
-        />
+        <TextView
+            android:id="@+id/getmessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/inmsg"

@@ -89,7 +89,7 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
             discoverableIntent.putExtra(mBluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
             startActivity(discoverableIntent);
 
-            new android.support.v7.app.AlertDialog.Builder(this).setTitle("请返回主界面重新进入！")
+            new android.support.v7.app.AlertDialog.Builder(this).setTitle("首次配对，请返回主界面重新进入！")
                     .setIcon(android.R.drawable.ic_dialog_info)
                     .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         @Override
@@ -158,7 +158,6 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
     private void  showDialog()
     {
         final EditText et = new EditText(this);
-
         new android.support.v7.app.AlertDialog.Builder(this).setTitle("聊天")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setView(et)
@@ -236,6 +235,7 @@ public class BlueToothService extends Activity implements AdapterView.OnItemClic
         }
         //通过地址获取到该设备
         selectDevice = mBluetoothAdapter.getRemoteDevice(desaddress);
+        list.setVisibility(View.GONE);
         if(judge_first)
         {
             try {

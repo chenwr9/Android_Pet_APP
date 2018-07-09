@@ -113,6 +113,7 @@
 
         <activity android:name=".PetInfoActivity"></activity>
         <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".QaActivity"></activity>
         <service
             android:name=".WechatLogService"
             android:enabled="true"
