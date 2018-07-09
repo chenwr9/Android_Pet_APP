@@ -505,7 +505,6 @@ public class PetService extends Service {
                         actions = new int[]{
                                 R.drawable.shime_hang, R.drawable.shime_bla};
                         randNum = rnd.nextInt(actions.length) % actions.length;
-                        mPetView_image.setBackgroundResource(R.drawable.shime_walk);
                         moveAnim = new CustomAnimationDrawableNew((AnimationDrawable) getResources().getDrawable(actions[randNum])) {
                             @Override
                             public void onAnimationFinish() {
