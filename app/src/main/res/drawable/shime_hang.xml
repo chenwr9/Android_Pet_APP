@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 定义动画循环播放 -->
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/shime_hang1" android:duration="360" />
+    <item android:drawable="@drawable/shime_hang2" android:duration="360" />
+    <item android:drawable="@drawable/shime_hang3" android:duration="360" />
+    <item android:drawable="@drawable/shime_hang4" android:duration="360" />
+    <item android:drawable="@drawable/shime_hang5" android:duration="360" />
+    <item android:drawable="@drawable/shime_hang6" android:duration="360" />
+    <item android:drawable="@drawable/shime_hang7" android:duration="360" />
+</animation-list>
